@@ -1,3 +1,6 @@
+// -- Matrix Management --
+
+
 CustomMatrix matrix;
 void configureMatrix() {
   float defaultRotation = Settings.MATRIX_DEFAULT_ROTATION;

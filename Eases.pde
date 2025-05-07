@@ -1,3 +1,6 @@
+// -- Ease Functions --
+
+
 // Java 7
 enum Ease {
   LINEAR { @Override float apply(float x) { return x; }},
@@ -113,8 +116,3 @@ enum Ease {
 //                                                              : ((float) Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
 //                                                          };
 //}
-
-
-static class Constants {
-  static final String ALPHANUMERALS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-}

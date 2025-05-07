@@ -1,3 +1,6 @@
+// -- Board Class --
+
+
 class Board {
   PVector[] corners;
   PVector center, size;

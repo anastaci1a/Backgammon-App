@@ -1,3 +1,19 @@
+   ////////////////////
+//////////////////////////
+
+/* +------------------+
+   | BACKGAMMON v2.0a |
+   |                  |
+   | > PRESS PLAY     |
+   +------------------+ */
+
+//////////////////////////
+   ////////////////////
+
+
+// -- Config --
+
+
 static class Settings {
   // mode
   static final int BOARD_SETUP_MODE = 0; // 0: Default
@@ -92,11 +108,16 @@ static class Palette {
   
   static final color PILLAR_LIGHT       = #bcab6b;
   static final color PILLAR_LIGHTER     = #e0d29f;
-  static final color PILLAR_DARK        = #3e2d24;
-  static final color PILLAR_DARKER      = #241811;
+  static final color PILLAR_DARK        = #603626; // #3e2d24;
+  static final color PILLAR_DARKER      = #42251A; // #241811;
   
   static final color DICE               = #ffffff;
   static final color DICE_OUTLINE       = #000000;
   
   static final color BOARDRESET_OUTLINE = #000000;
+}
+
+
+static class Constants {
+  static final String ALPHANUMERALS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 }

@@ -1,3 +1,6 @@
+// -- Board Prepare --
+
+
 PImage starsBackground;
 float  starsBackgroundScale;
 Gradient[] gradients;

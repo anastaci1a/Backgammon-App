@@ -1,3 +1,6 @@
+// -- User Input --
+
+
 Mouse mouse = new Mouse();
 
 class Mouse {

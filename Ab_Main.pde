@@ -1,22 +1,3 @@
-   ////////////////////
-//////////////////////////
-
-/* +------------------+
-   | BACKGAMMON v2.0a |
-   |                  |
-   | > PRESS PLAY     |
-   +------------------+ */
-
-//////////////////////////
-   ////////////////////
-
-
-// -- Config --
-
-
-// [...]
-
-
 // -- Imports --
 
 
@@ -70,8 +51,7 @@ void settings() {
   // --
   
   screenRatio *= (1 - heightAdjustment) / (1 - widthAdjustment);
-  screenHeight = 1350; // [portrait] z flip actual size (really close to it) - when on laptop
-  //screenHeight = 1200; // [portrait] decent size on desktop
+  screenHeight = 1500; // [landscape] decent size on laptop
   
   // --
   if (landscape) {
@@ -115,75 +95,3 @@ void draw() {
   // draw
   drawBoard();
 }
-
-
-// -- Board Prepare --
-
-
-// [...]
-
-
-// -- Board Setup --
-
-
-// [...]
-
-
-// -- Board --
-
-
-// [...]
-
-
-// -- Board PiecePools --
-
-
-// [...]
-
-
-// -- Board Piece --
-
-
-// [...]
-
-
-// -- Board Interactives --
-
-
-// [...]
-
-
-// -- Physics --
-
-
-// [...]
-
-
-// -- Matrix --
-
-
-// [...]
-
-
-// -- Input --
-
-
-// [...]
-
-
-// -- Saving --
-
-
-// [...]
-
-
-// -- Misc Utils --
-
-
-// [...]
-
-
-// -- Reference --
-
-
-// [...]

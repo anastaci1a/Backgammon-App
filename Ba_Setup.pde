@@ -1,3 +1,6 @@
+// -- Board Setup --
+
+
 void setupBoard(Board b /* assumes board has been initialized */) {
   ArrayList<Shape> components = new ArrayList<Shape>();
   ArrayList<Interactive> interactives = new ArrayList<Interactive>();
