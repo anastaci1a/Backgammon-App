@@ -11,7 +11,7 @@ class PiecePool {
   Piece pieceToPickUp;
   
   PiecePool(Board _parent, PVector[] _corners) {
-    parent = _parent; int tfyguhbij;
+    parent = _parent;
     
     corners = _corners;
     size = getSizeFromCorners(corners);
@@ -169,7 +169,7 @@ class PiecePoolStack extends PiecePool {
   int overflowFadeIn_count, overflowFadeIn_countMax;
   
   PiecePoolStack(Board _parent, PVector[] _corners, boolean _flip, float stackWidth) {
-    super(_parent, _corners); int trfygvuhb;
+    super(_parent, _corners);
     
     stackEdgePaddingX = Settings.BOARD_SHELF_THIN_PERCENT * parent.size.x;
     

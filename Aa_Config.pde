@@ -17,7 +17,7 @@
 static class Settings {
   // mode
   static final int BOARD_SETUP_MODE = 0; // 0: Default
-                                         // 1: ??? (not implemented)
+                                         // 1: ??? (not implemented, and it crashes)
   // screen
   static final float SCREEN_MIN_RATIO         = 2;    // to adjust for best scaling
   static final float SCREEN_SIDES_MIN_PERCENT = 0.12; // side gradients, percent of shorter screen dimension
@@ -52,8 +52,9 @@ static class Settings {
   static final float DICE_OUTLINE_PERCENT  = 0.12;                                    // dice size percent
   static final float DICE_ROUNDING_PERCENT = 0.20;                                    // dice size percent
   
-  static final int   DICE_RANDOM_RANGE = BOARD_PILLARS_PER_SECTION; // number of faces on dice
-  static final float DICE_FRICTION     = 0.05;                      // amount of friction for all dice
+  static final int   DICE_RANDOM_RANGE            = BOARD_PILLARS_PER_SECTION; // number of faces on dice
+  static final float DICE_FRICTION                = 0.05;                      // amount of friction for all dice
+  static final float DICE_DOUBLES_FRICTION_FACTOR = 0.5;                       // factor applied to friction when doubles happen
   
   // board reset button
   static final int   BOARDRESET_HOLD_FRAMES      = 90;                               // amount of holding frames required to reset

@@ -10,6 +10,7 @@ class DiePair {
   ArrayList<Physics.Box> allDice;
   
   ArrayList<PVector> diceBasePositions;
+  PVector[] diceBounds;
   float diceSize, diceFriction;
   
   PVector[] hitboxCorners;
@@ -60,44 +61,22 @@ class DiePair {
     float diceDeltaX      = dicePadding + (diceSize / 2);
     float diceX           = (flip ? board.size.x : 0) + (flipSign * diceDeltaX);
     
+    // dice bounds
+    float diceBounds_paddingY = Settings.BOARD_SHELF_THICK_PERCENT * board.size.y;
+    float diceBounds_paddingX = Settings.BOARD_SHELF_THIN_PERCENT * board.size.y;
+    diceBounds = new PVector[2];
+    diceBounds[0] = board.corners[0].copy().add(diceBounds_paddingX, diceBounds_paddingY);
+    diceBounds[1] = board.corners[1].copy().sub(diceBounds_paddingX, diceBounds_paddingY);
+    
     // top die
     PVector topDiePos = new PVector(diceX, board.center.y - diceDeltaY_half);
     diceBasePositions.add(topDiePos.copy());
-    createDie(topDiePos); /*new Die(
-      allDice.size(),
-      this,
-      topDiePos,
-      diceSize,
-      flip,
-      diceFriction,
-      allDice
-    );*/
-    /*dice.add(topDie);
-    allDice.add(topDie);*/
+    createDie(topDiePos);
     
     // bottom die
     PVector bottomDiePos = new PVector(diceX, board.center.y + diceDeltaY_half);
     diceBasePositions.add(bottomDiePos.copy());
-    Die bottomDie = createDie(bottomDiePos); /*new Die(
-      allDice.size(),
-      this,
-      bottomDiePos,
-      diceSize,
-      flip,
-      diceFriction,
-      allDice
-    );
-    dice.add(bottomDie);
-    allDice.add(bottomDie);*/
-    
-    float diceBounds_paddingY = Settings.BOARD_SHELF_THICK_PERCENT * board.size.y;
-    float diceBounds_paddingX = Settings.BOARD_SHELF_THIN_PERCENT * board.size.y;
-    PVector[] diceBounds = new PVector[2];
-    diceBounds[0] = board.corners[0].copy().add(diceBounds_paddingX, diceBounds_paddingY);
-    diceBounds[1] = board.corners[1].copy().sub(diceBounds_paddingX, diceBounds_paddingY);
-    
-    dice.get(0).boundsCorners = diceBounds;
-    dice.get(1).boundsCorners = diceBounds;
+    createDie(bottomDiePos);
     
     for (Physics.Box d : dice) {
       Die die = (Die) d;
@@ -169,11 +148,11 @@ class DiePair {
   }
   
   Die createDie(PVector diePos) {
-    diceBasePositions.add(diePos.copy());
     Die die = new Die(
       allDice.size(),
       this,
       diePos,
+      diceBounds,
       diceSize,
       flip,
       diceFriction,
@@ -297,11 +276,12 @@ class DiePair {
         float easeVal = diceReturnEase.apply(easeX);
         applyEase(easeVal);
         
-        diceReturnCountdown --;
+        diceReturnCountdown--;
       }
       
       // ease finished
       else {
+        resetDoublesDice();
         doublesMode = false;
         
         diceReturn = false;
@@ -364,7 +344,7 @@ class DiePair {
       
       // pos
       PVector startPos = diceReturnStartPositions.get(i);
-      PVector endPos   = diceBasePositions.get(i);
+      PVector endPos   = diceBasePositions.get(i % 2); // diceBasePosition has size 2
       
       PVector newPos = lerpVector(easeVal, startPos, endPos);
       die.pos = newPos.copy();
@@ -383,10 +363,48 @@ class DiePair {
   }
   
   void addDoublesDice() {
-    for (Physics.Box d : dice) {
+    int newDiceAmount = dice.size();
+    for (int i = 0; i < newDiceAmount; i++) {
+      Die d = (Die) dice.get(i);
+      
       Die newDie = createDie(d.pos.copy());
-      newDie.vel = d.vel.copy();
+      newDie.physicsActive = true;
+      newDie.vel = d.vel.copy().rotate(HALF_PI);
       newDie.rot = d.rot;
+      
+      newDie.setOtherDie(d);
+    }
+    
+    for (Physics.Box die : dice) die.friction *= Settings.DICE_DOUBLES_FRICTION_FACTOR;
+  }
+  
+  void resetDoublesDice() {
+    if (doublesMode) {
+      // remove all local dice except starting pair
+      int diceToRemove = dice.size() - 2;
+      if (diceToRemove > 0) {
+        for (int i = (2 + diceToRemove) - 1; i >= 2; i--) {
+          Die localDie = (Die) dice.get(i);
+          int localIndex = localDie.id;
+          
+          // remove die from dice list
+          dice.remove(i);
+          
+          // remove die from allDice list
+          for (int j = 0; j < allDice.size(); j++) {
+            Die globalDie = (Die) allDice.get(j);
+            int globalIndex = globalDie.id;
+            
+            if (globalIndex == localIndex) {
+              allDice.remove(j);
+              break;
+            }
+          }
+        }
+      }
+      
+      // reset slippery friction
+      for (Physics.Box die : dice) die.friction /= Settings.DICE_DOUBLES_FRICTION_FACTOR;
     }
   }
   
@@ -398,5 +416,11 @@ class DiePair {
   
   void randomizeDoubles() {
     doublesMode = int(random(Settings.DICE_RANDOM_RANGE)) == 0;
+  }
+  
+  void setDiceNumbers(int n) {
+    for (Physics.Box die : dice) {
+      ((Die) die).number = n;
+    }
   }
 }

@@ -12,7 +12,7 @@ void setupBoard(Board b /* assumes board has been initialized */) {
   
   // modes
   switch(Settings.BOARD_SETUP_MODE) {
-    // default (normal board)
+    // default (normal board ...the only kind...)
     case 0: {
       // -- magic numbers --
       

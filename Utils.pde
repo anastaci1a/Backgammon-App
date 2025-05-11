@@ -31,7 +31,7 @@ void vibrateTwice(long amount, int delay) {
 
 void vibrate(long amount) { // unsure what "amount" represents in the actual function (little info), maybe milliseconds? strength/amplitude?
   //((Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE)).vibrate(amount); // UNCOMMENT ON ANDROID
-  //println("vibrating with amount " + str(amount)); // debug
+  ////println("vibrating with amount " + str(amount)); // debug
 }
 
 void manageAndroid() {

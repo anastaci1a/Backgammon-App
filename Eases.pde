@@ -3,7 +3,7 @@
 
 // Java 7
 enum Ease {
-  LINEAR { @Override float apply(float x) { return x; }},
+  LINEAR      { @Override float apply(float x) { return x; }},
   
   IN_SINE     { @Override float apply(float x) { return 1 - (float) Math.cos((x * (float) Math.PI) / 2); }},
   OUT_SINE    { @Override float apply(float x) { return (float) Math.sin((x * (float) Math.PI) / 2); }},

@@ -15,7 +15,7 @@ class Die extends Physics.Box {
   PVector acc, vel_previous;
   float flipAccThres;
   
-  Die(int _id, DiePair _parent, PVector _pos, float _size, boolean _flip, float _friction, ArrayList<Physics.Box> _allDice) {
+  Die(int _id, DiePair _parent, PVector _pos, PVector[] _boundsCorners, float _size, boolean _flip, float _friction, ArrayList<Physics.Box> _allDice) {
     super(
       _id,
       _pos,
@@ -26,10 +26,11 @@ class Die extends Physics.Box {
       _allDice
     );
     physicsActive = false;
+    boundsCorners = _boundsCorners;
     
     parent = _parent;
     
-    generateNumber();
+    //generateNumber();
     
     colFill = Palette.DICE;
     colStroke = Palette.DICE_OUTLINE;
@@ -51,6 +52,10 @@ class Die extends Physics.Box {
   void setOtherDie() {
     int otherDie_indexDelta = -(2 * (id % 2) - 1); // just go with it, it works
     otherDie = (Die) allBoxes.get(id + otherDie_indexDelta);
+  }
+  
+  void setOtherDie(Physics.Box other) {
+    otherDie = (Die) other;
   }
   
   // --
@@ -217,7 +222,7 @@ class Die extends Physics.Box {
     
     // doubles
     if (parent.doublesMode) {
-      otherDie.number = number;
+      parent.setDiceNumbers(number);
     }
     
     // avoid other die's number
