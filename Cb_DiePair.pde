@@ -363,9 +363,12 @@ class DiePair {
   }
   
   void addDoublesDice() {
-    int newDiceAmount = dice.size();
-    for (int i = 0; i < newDiceAmount; i++) {
-      Die d = (Die) dice.get(i);
+    int diceSize = dice.size();
+    
+    int diceToAdd = 12;
+    for (int i = 0; i < diceToAdd; i++) {
+      int index = i % diceSize;
+      Die d = (Die) dice.get(index);
       
       Die newDie = createDie(d.pos.copy());
       newDie.physicsActive = true;
