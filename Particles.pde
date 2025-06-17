@@ -15,13 +15,18 @@ class ParticleField {
   
   // --
   
-  void addPreset(ParticlePreset preset) {
-    ArrayList<Particle> particlesToAdd = getParticlePreset(preset);
+  void addPreset(ParticlePreset preset, Object... args) {
+    ArrayList<Particle> particlesToAdd = getParticlePreset(preset, args);
     addParticles(particlesToAdd);
   }
   
   void addParticles(ArrayList<Particle> particlesToAdd) {
-    particles.addAll(particlesToAdd);
+    ArrayList<Particle> newParticles = new ArrayList<Particle>();
+    
+    newParticles.addAll(particlesToAdd);
+    newParticles.addAll(particles);
+    
+    particles = newParticles;
   }
 }
 
@@ -92,8 +97,11 @@ class Particle {
   // --
   
   void drawParticle() {
+    float lifeLeftAsPercent = (float) life/lifespan;
+    color alphaCol = color(hue(col), saturation(col), brightness(col), alpha(col) * lifeLeftAsPercent);
+    
     noStroke();
-    fill(col);
+    fill(alphaCol);
     
     circle(size);
   }
@@ -101,9 +109,11 @@ class Particle {
 
 
 enum ParticlePreset {
-  MAGICALS
+  MAGICALS,
+  SCORE_INDICATOR // REQUIRED args: PVector position, float textSize, boolean flip, int number
 }
-ArrayList<Particle> getParticlePreset(ParticlePreset preset) {
+
+ArrayList<Particle> getParticlePreset(ParticlePreset preset, Object... args) {
   ArrayList<Particle> particles = new ArrayList<Particle>();
   
   // --
@@ -114,6 +124,61 @@ ArrayList<Particle> getParticlePreset(ParticlePreset preset) {
       for (int i = 0; i < amount; i++) {
         ParticleMagical magical = new ParticleMagical();
         particles.add(magical);
+      }
+      
+      return particles;
+    }
+    
+    case SCORE_INDICATOR: {
+      PVector pos = new PVector();
+      boolean flip = false;
+      int number = 0;
+      
+      boolean argsSuccess = true;
+      try {
+        pos      = (PVector) args[0];
+        flip     = (Boolean) args[1];
+        number   = (Integer) args[2];
+      } catch (Exception e) {
+        println("getParticlePreset's args could not be parsed.");
+        
+        argsSuccess = false;
+      }
+      
+      if (argsSuccess) {
+        boolean good = number > 0;
+        
+        // init vars
+        
+        color fxCol      =  good ? Palette.SCOREUP_FX                          : Palette.SCOREDOWN_FX;
+        int   fxLifespan =  good ? Settings.PARTICLE_SCOREGOOD_LIFESPAN        : Settings.PARTICLE_SCOREBAD_LIFESPAN;
+        float fxSize     = (good ? Settings.PARTICLE_SCOREGOOD_FX_SIZE_PERCENT : Settings.PARTICLE_SCOREBAD_FX_SIZE_PERCENT) * board.size.x;
+        int   fxAmount   =  good ? Settings.PARTICLE_SCOREGOOD_FX_AMOUNT       : Settings.PARTICLE_SCOREBAD_FX_AMOUNT;
+        
+        float fxVel_mult = (good ? 0.2 : 0.01) * fxSize;
+        
+        // number particle
+        
+        float scoreTextSize = Settings.PARTICLE_SCORE_TEXT_SIZE_PERCENT * board.size.x;
+        
+        Particle particleScore = new ParticleScore(pos, scoreTextSize, flip, number, fxLifespan);
+        particles.add(particleScore);
+        
+        // fx particles (little circles)
+        
+        for (int i = 0; i < fxAmount; i++) {
+          Particle fx = new Particle(
+            pos.copy().add(PVector.random2D().mult(random(2) * fxSize)), // pos
+            PVector.random2D().mult(random(1) * fxVel_mult),             // vel
+            0, 0,                                                        // rot, rotVel
+            round(fxLifespan * random(0.1, 0.8))                         // lifespan
+          );
+          
+          fx.col  = fxCol;
+          fx.size = fxSize;
+          
+          particles.add(fx);
+        }
       }
       
       return particles;
@@ -139,8 +204,7 @@ class ParticleMagical extends Particle {
       round(random(20, 50))          // lifespan
     );
     
-    float diceSize = Settings.DICE_SIZE_PERCENT * board.size.x;
-    size = diceSize * Settings.PARTICLE_MAGICAL_SIZE_PERCENT;
+    size = Settings.PARTICLE_MAGICAL_SIZE_PERCENT * board.size.x;
     
     PVector posDelta = PVector.random2D().setMag(random(1.5 * size));
     pos.add(posDelta);
@@ -162,6 +226,47 @@ class ParticleMagical extends Particle {
     
     textSize(size);
     textAlign(CENTER, CENTER);
+    text(text, 0, 0);
+  }
+}
+
+
+class ParticleScore extends Particle {
+  String text;
+  float textSize;
+  color col;
+  
+  ParticleScore(PVector _pos, float _textSize, boolean flip, int number, int _lifespan) {
+    super(
+      _pos,                            // pos
+      new PVector(0, 0),               // vel
+      flip ? PI + HALF_PI : HALF_PI,   // rot
+      (HALF_PI / 500) * random(-1, 1), // rotVel
+      _lifespan                        // lifespan
+    );
+    
+    boolean good = number > 0;
+    //if (good) rotVel = 0; // (no rotation if negative score)
+    
+    /*              | positive score           | negative score        */
+    text     = good ? str(number)              : "– " + str(abs(number));
+    col      = good ? Palette.SCOREUP_TEXT     : Palette.SCOREDOWN_TEXT;
+    
+    textSize = _textSize;
+  }
+  
+  @Override
+  void drawParticle() {
+    float lifeLeftAsPercent = (float) life/lifespan;
+    lifeLeftAsPercent = Ease.OUT_CUBIC.apply(lifeLeftAsPercent);
+    
+    color alphaCol = color(hue(col), saturation(col), brightness(col), alpha(col) * lifeLeftAsPercent);
+    
+    noStroke();
+    fill(alphaCol);
+    
+    textAlign(CENTER, CENTER);
+    textSize(textSize);
     text(text, 0, 0);
   }
 }

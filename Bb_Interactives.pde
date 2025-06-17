@@ -38,12 +38,6 @@ class DiePairPair extends Interactive { // both (left/right) pairs of dice
 }
 
 
-// CLASS DIEPAIR
-
-
-// CLASS DIE
-
-
 class BoardReset extends Interactive {
   PVector pos;
   float size;
@@ -57,6 +51,8 @@ class BoardReset extends Interactive {
   
   int holdCountdown, holdCountdownReset;
   float countdownPercent;
+  
+  // --
   
   BoardReset(Board _board, PVector _pos) {
     super(_board);
@@ -144,5 +140,299 @@ class BoardReset extends Interactive {
   void setColor() {
     float hue = (frameCount / 3.0) % 360;
     colFill = color(hue, 50, 100);
+  }
+}
+
+
+
+class TeamProgress extends Interactive {
+  int[] blackPPValues, whitePPValues;
+  
+  int blackProgress, whiteProgress;
+  int blackProgress_change, whiteProgress_change;
+  
+  int maxPieceValue, maxTeamProgress;
+  
+  boolean shouldCalculate;
+  
+  // --
+  
+  ParticleField field;
+  PVector blackParticlesPos, whiteParticlesPos;
+  
+  ProgressBar blackPB, whitePB;
+  
+  TeamProgress(Board _board) {
+    super(_board);
+    
+    blackProgress = 0;
+    whiteProgress = 0;
+    
+    blackProgress_change = 0;
+    whiteProgress_change = 0;
+    
+    maxPieceValue   = (4 * Settings.BOARD_PILLARS_PER_SECTION) + 1;
+    maxTeamProgress = maxPieceValue * Settings.PIECES_PER_COLOR;
+    
+    setPPValues();
+    
+    // --
+    
+    field = new ParticleField();
+    
+    float diceSize = Settings.DICE_SIZE_PERCENT * board.size.x;
+    float textSize = Settings.PARTICLE_SCORE_TEXT_SIZE_PERCENT * board.size.x;
+    
+    float deltaX = (board.size.x / 2) - diceSize - (textSize / 1.2);
+    
+    blackParticlesPos = board.center.copy().add(-deltaX, 0);
+    whiteParticlesPos = board.center.copy().add(deltaX, 0);
+  }
+  
+  void setupPBs(ProgressBar white, ProgressBar black) {
+    blackPB = black;
+    whitePB = white;
+  }
+  
+  // --
+  
+  @Override
+  void manage() {
+    update();
+    field.manage();
+  }
+  
+  void update() {
+    if (board.safeFrame) {
+      calculateProgress();
+      observeChange();
+    }
+  }
+  
+  // --
+  
+  void calculateProgress() {
+    int blackProgress_prev = blackProgress;
+    int whiteProgress_prev = whiteProgress; 
+    
+    blackProgress = 0;
+    whiteProgress = 0;
+    
+    for (int i = 0; i < board.piecePools.size(); i++) {
+      PiecePool pp = board.piecePools.get(i);
+      
+      int blackAmount = pp.piecesOfColorInPool(Palette.PIECE_DARK);
+      int whiteAmount = pp.piecesOfColorInPool(Palette.PIECE_LIGHT);
+      
+      blackProgress += blackPPValues[i] * blackAmount;
+      whiteProgress += whitePPValues[i] * whiteAmount;
+    }
+    
+    blackProgress_change = blackProgress - blackProgress_prev;
+    whiteProgress_change = whiteProgress - whiteProgress_prev;
+    
+    float blackProgress_percent = (float) blackProgress / maxTeamProgress;
+    float whiteProgress_percent = (float) whiteProgress / maxTeamProgress;
+    
+    Ease curve = Ease.IN_CUBIC;
+    
+    blackPB.moveTo(curve.apply(blackProgress_percent));
+    whitePB.moveTo(curve.apply(whiteProgress_percent));
+  }
+  
+  void observeChange() {
+    boolean shouldObserveChange = (blackProgress_change != 0 || whiteProgress_change != 0);
+    shouldObserveChange = shouldObserveChange && !board.doNotProcessFrame;
+    
+    // score indicator particles
+    if (shouldObserveChange) {
+      if (blackProgress_change != 0) {
+        int totalChange = blackProgress_change; // - whiteProgress_change;
+        field.addPreset(ParticlePreset.SCORE_INDICATOR, blackParticlesPos, false, totalChange);
+      }
+      
+      if (whiteProgress_change != 0) {
+        int totalChange = whiteProgress_change; // - blackProgress_change;
+        field.addPreset(ParticlePreset.SCORE_INDICATOR, whiteParticlesPos, true, totalChange);
+      }
+      
+      whiteProgress_change = 0;
+      blackProgress_change = 0;
+    }
+  }
+  
+  void setPPValues() {
+    int PPS = Settings.BOARD_PILLARS_PER_SECTION;
+    
+    int poolsTotal = (4 * PPS) + 6; // 4 sections, 6 other pools (4 homes, 2 outs)
+    blackPPValues = new int[poolsTotal];
+    whitePPValues = new int[poolsTotal];
+    
+    //maxPieceValue = (4 * PPS) + 1;
+    
+    
+    // black
+    
+    // top L/R (B/W) homes
+    blackPPValues[0] = maxPieceValue;
+    blackPPValues[1] = 0;
+    
+    // center quarries (piece is out)
+    blackPPValues[2] = 0;
+    blackPPValues[3] = 0;
+    
+    // bottom L/R (W/B) "homes" (meaningless unless game is rotated 180° ...which doesn't happen)
+    blackPPValues[4] = 0;
+    blackPPValues[5] = maxPieceValue;
+    
+    // all other pools (sequence: TL/BL/TR/BR)
+    int i = 6;
+    for (int j = 0; j < PPS; j++) {
+      // top left
+      blackPPValues[i] = (4 * PPS) - j;
+      
+      // bottom left
+      blackPPValues[i + 1] = (3 * PPS) - j;
+      
+      // top right
+      blackPPValues[i + 2] = j + 1;
+      
+      // bottom right
+      blackPPValues[i + 3] = PPS + 1 + j;
+      
+      // iter
+      i += 4;
+    }
+    
+    
+    // white
+    
+    // white is (mostly) the inverse of black
+    for (int j = 0; j < poolsTotal; j++) {
+      whitePPValues[j] = maxPieceValue - blackPPValues[j];
+    }
+    
+    // center quarries (piece is out)
+    whitePPValues[2] = 0;
+    whitePPValues[3] = 0;
+  }
+}
+
+
+class ProgressBar extends Interactive {
+  PVector pos, size;
+  boolean flip;
+  
+  float currentProgress, startProgress, endProgress;
+  
+  int easeFramesTotal, easeFrames;
+  Ease easeFunc;
+  
+  // --
+  
+  color startColor, previewColor, endColor, outlineColor;
+  
+  float outlineSize;
+  float rounding;
+  
+  ProgressBar(Board _board, PVector _pos, PVector _size, boolean _flip) {
+    super(_board);
+    
+    pos = _pos;
+    size = _size;
+    flip = _flip;
+    
+    currentProgress = 0.5;
+    startProgress = 0; endProgress = 0;
+    
+    easeFunc = Settings.ANIM_EASE_MEDIUM;
+    easeFrames = 0;
+    easeFramesTotal = Settings.ANIM_FRAMECOUNT_MEDIUM;
+    
+    // --
+    
+    startColor   = Palette.PROGRESSBAR_LEFT;
+    previewColor = Palette.PROGRESSBAR_PREVIEW;
+    endColor     = Palette.PROGRESSBAR_RIGHT;
+    outlineColor = Palette.PROGRESSBAR_OUTLINE;
+    
+    outlineSize = Settings.PROGRESSBAR_OUTLINE_PERCENT * board.size.x;
+    rounding    = Settings.PROGRESSBAR_ROUNDING_PERCENT * board.size.x;
+  }
+  
+  @Override
+  void manage() {
+    update();
+    display();
+  }
+  
+  void update() {
+    if (easeFrames <= easeFramesTotal) {
+      float easeVal = getEaseVal();
+      currentProgress = map(easeVal, 0, 1, startProgress, endProgress);
+      
+      easeFrames++;
+    }
+  }
+  
+  void display() {
+    pushMatrix();
+    
+    translate(pos.x, pos.y);
+    rotate(flip ? PI + HALF_PI : HALF_PI);
+    
+    // "background" of progress bar (end color)
+    
+    fill(endColor);
+    noStroke();
+    
+    rectCustomHere(size, rounding);
+    
+    // "progress' shadow" (preview color)
+    
+    pushMatrix();
+    
+    translate((size.x * endProgress / 2) - (size.x / 2), 0);
+    fill(getEasedPreviewColor());
+    
+    PVector previewProgressSize = new PVector(size.x * endProgress, size.y);
+    rectCustomHere(previewProgressSize, rounding);
+    
+    popMatrix();
+    
+     // "progress of progress" (start color)
+    
+    pushMatrix();
+    
+    translate((size.x * currentProgress / 2) - (size.x / 2), 0);
+    fill(startColor);
+    
+    PVector currentProgressSize = new PVector(size.x * currentProgress, size.y);
+    rectCustomHere(currentProgressSize, rounding);
+    
+    popMatrix();
+    
+    popMatrix();
+  }
+  
+  // --
+  
+  void moveTo(float newProgress) {
+    easeFrames = 0;
+    
+    startProgress = currentProgress;
+    endProgress = newProgress;
+  }
+  
+  float getEaseVal() {
+    float easeX = (float) easeFrames / easeFramesTotal;
+    return easeFunc.apply(easeX);
+  }
+  
+  color getEasedPreviewColor() {
+    float easeVal = easeFunc.apply(easeFunc.apply(getEaseVal()));
+    color easedCol = lerpColor(endColor, previewColor, easeVal);
+    
+    return easedCol;
   }
 }

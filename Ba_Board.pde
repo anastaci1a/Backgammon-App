@@ -38,6 +38,12 @@ class Board {
   int[] setupBoard_mapOfBlack;
   int[] setupBoard_mapOfWhite;
   
+  // --
+  
+  boolean safeFrame;         // frame is "safe", no pieces lost/moving/held
+  boolean allowSave;         // allow saving during this frame
+  boolean doNotProcessFrame; // for the progress indicators, this is kinda dumb
+  
   Board(PVector[] _corners) {
     corners = _corners;
     center = corners[0].copy().add(corners[1]).div(2);
@@ -66,6 +72,10 @@ class Board {
     
     movingPieces = new ArrayList<Piece>();
     lostPieces = new ArrayList<Piece>();
+    
+    safeFrame = false;
+    allowSave = true;
+    doNotProcessFrame = false;
     
     // --
     
@@ -97,9 +107,19 @@ class Board {
     
     // --
     
+    safeFrame = false;
+    doNotProcessFrame = false;
+    
+    // --
+    
     manageMovingPieces();
     manageLostPieces();
     manageHeldPiece();
+    
+    // --
+    
+    if (safeFrame && allowSave) saveGame();
+    allowSave = true;
   }
   
   // --
@@ -158,13 +178,13 @@ class Board {
       
       // --
       
-      // saving if no moving/lost pieces (and no held)
+      // "safe frame" if no moving/lost pieces (and no held)
       
       boolean noLost = lostPieces.size() == 0;
-      boolean noMoving = movingPieces.size() == 0;
+      //boolean noMoving = movingPieces.size() == 0;
       boolean noHeld = heldPiece == null;
       
-      if (noLost && noMoving && noHeld) saveGame();
+      safeFrame = noLost && noHeld && poolFound;
     }
   }
   
@@ -270,7 +290,6 @@ class Board {
   
   void forceSendPieceToPool(Piece piece, PiecePool pool, int frames, Ease ease) {
     if (piece.parent != pool) {
-      
       // put piece at end of the stack, and realignment
       
       piece.sending = true;
@@ -468,7 +487,7 @@ class Board {
               if (!piece.placed) {
                 int poolGoal = piece.map[mapIndex];
                 
-                // if there's other colored pieces
+                // if there's different colored pieces
                 boolean poolIsStack = pool instanceof PiecePoolStack || pool instanceof PiecePoolHome;
                 if (poolIsStack && poolGoal > 0 && pool.getColor(piece.col) != piece.col) {
                   evacuatePool(pool);
@@ -516,6 +535,10 @@ class Board {
       else {
         setupBoard = false;
         setupBoard_index = 0;
+        
+        allowSave = false;
+        safeFrame = true;
+        doNotProcessFrame = true;
       }
     }
   }

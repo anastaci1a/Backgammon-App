@@ -58,6 +58,7 @@ class Piece {
     if (sending) {
       if (sendCountdown == 0) {
         pos = sentPos.copy();
+        sentPos = null;
         
         sendCountdownStart = 0;
         sendCountdown = -1;

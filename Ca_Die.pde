@@ -30,7 +30,7 @@ class Die extends Physics.Box {
     
     parent = _parent;
     
-    //generateNumber();
+    generateNumber();
     
     colFill = Palette.DICE;
     colStroke = Palette.DICE_OUTLINE;
@@ -46,7 +46,7 @@ class Die extends Physics.Box {
     acc = new PVector(0, 0);
     vel_previous = vel.copy();
     
-    flipAccThres = 0.1 * size.x; // this is a weird magic number, adjust with testing
+    flipAccThres = 0.1 * size.x; // amount of accel for die num to change (this is a weird magic number, adjust with testing)
   }
   
   void setOtherDie() {
@@ -89,7 +89,7 @@ class Die extends Physics.Box {
     float designScale = 0.5;
     
     designScale *= 1 - (outlineSize / size.x);
-    PVector scaleVector = new PVector(size.x, size.y).mult(0.5 * designScale);
+    PVector scaleVector = new PVector(size.y, size.x).mult(0.5 * designScale);
     PVector scaleVector_inverse = new PVector(1 / scaleVector.x, 1 / scaleVector.y);
     
     pushMatrix();

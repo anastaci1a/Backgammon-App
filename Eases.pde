@@ -8,22 +8,27 @@ enum Ease {
   IN_SINE     { @Override float apply(float x) { return 1 - (float) Math.cos((x * (float) Math.PI) / 2); }},
   OUT_SINE    { @Override float apply(float x) { return (float) Math.sin((x * (float) Math.PI) / 2); }},
   INOUT_SINE  { @Override float apply(float x) { return -((float) Math.cos((float) Math.PI * x) - 1) / 2; }},
+  OUTIN_SINE  { @Override float apply(float x) { return x < 0.5f ? OUT_SINE.apply(2f * x) * 0.5f : IN_SINE.apply(2f * x - 1f) * 0.5f + 0.5f; }},
   
   IN_QUAD     { @Override float apply(float x) { return x * x; }},
   OUT_QUAD    { @Override float apply(float x) { return 1 - (1 - x) * (1 - x); }},
   INOUT_QUAD  { @Override float apply(float x) { return x < 0.5 ? 2 * x * x : 1 - (float) Math.pow(-2 * x + 2, 2) / 2; }},
+  OUTIN_QUAD  { @Override float apply(float x) { return x < 0.5f ? OUT_QUAD.apply(2f * x) * 0.5f : IN_QUAD.apply(2f * x - 1f) * 0.5f + 0.5f; }},
   
   IN_CUBIC    { @Override float apply(float x) { return x * x * x; }},
   OUT_CUBIC   { @Override float apply(float x) { return 1 - (float) Math.pow(1 - x, 3); }},
   INOUT_CUBIC { @Override float apply(float x) { return x < 0.5 ? 4 * x * x * x : 1 - (float) Math.pow(-2 * x + 2, 3) / 2; }},
+  OUTIN_CUBIC { @Override float apply(float x) { return x < 0.5f ? OUT_CUBIC.apply(2f * x) * 0.5f : IN_CUBIC.apply(2f * x - 1f) * 0.5f + 0.5f; }},
   
   IN_QUART    { @Override float apply(float x) { return x * x * x * x; }},
   OUT_QUART   { @Override float apply(float x) { return 1 - (float) Math.pow(1 - x, 4); }},
   INOUT_QUART { @Override float apply(float x) { return x < 0.5 ? 8 * x * x * x * x : 1 - (float) Math.pow(-2 * x + 2, 4) / 2; }},
+  OUTIN_QUART { @Override float apply(float x) { return x < 0.5f ? OUT_QUART.apply(2f * x) * 0.5f : IN_QUART.apply(2f * x - 1f) * 0.5f + 0.5f; }},
   
   IN_QUINT    { @Override float apply(float x) { return x * x * x * x * x; }},
   OUT_QUINT   { @Override float apply(float x) { return 1 - (float) Math.pow(1 - x, 5); }},
   INOUT_QUINT { @Override float apply(float x) { return x < 0.5 ? 16 * x * x * x * x * x : 1 - (float) Math.pow(-2 * x + 2, 5) / 2; }},
+  OUTIN_QUINT { @Override float apply(float x) { return x < 0.5f ? OUT_QUINT.apply(2f * x) * 0.5f : IN_QUINT.apply(2f * x - 1f) * 0.5f + 0.5f; }},
   
   IN_EXPO     { @Override float apply(float x) { return x == 0 ? 0 : (float) Math.pow(2, 10 * x - 10); }},
   OUT_EXPO    { @Override float apply(float x) { return x == 1 ? 1 : 1 - (float) Math.pow(2, -10 * x); }},
@@ -59,8 +64,8 @@ enum Ease {
   
   abstract float apply(float x);
 }
-  
-  
+
+
 
 // Java 8
 //static class _Ease {

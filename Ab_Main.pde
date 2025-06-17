@@ -51,7 +51,8 @@ void settings() {
   // --
   
   screenRatio *= (1 - heightAdjustment) / (1 - widthAdjustment);
-  screenHeight = 1500; // [landscape] decent size on laptop
+  //screenHeight = 900; // [landscape] decent size on laptop
+  screenHeight = 600; // [landscape] decent size on desktop
   
   // --
   if (landscape) {

@@ -365,13 +365,31 @@ void setupBoard(Board b /* assumes board has been initialized */) {
       
       // interactives
       
+      // progress bars (black)
+      PVector progressBars_size = new PVector(Settings.PROGRESSBAR_LONG_PERCENT * b.size.y, Settings.PROGRESSBAR_THIN_PERCENT * b.size.x);
+      float progressBars_deltaX = ((Settings.BOARD_SHELF_MIDDLE_PERCENT * b.size.x) / 2) + (Settings.PROGRESSBAR_THIN_ALLOCATION * b.size.x / 4);
+      
+      PVector leftProgress_pos = b.center.copy().add(progressBars_deltaX, 0);
+      PVector rightProgress_pos = b.center.copy().add(-progressBars_deltaX, 0);
+      ProgressBar blackProgress = new ProgressBar(b, leftProgress_pos, progressBars_size, true); // left
+      ProgressBar whiteProgress = new ProgressBar(b, rightProgress_pos, progressBars_size, false); // right
+      
+      // progress meters/calculator
+      TeamProgress teamProgress = new TeamProgress(b);
+      teamProgress.setupPBs(blackProgress, whiteProgress);
+      
       // reset button
       BoardReset boardReset = new BoardReset(b, b.center.copy());
-      interactives.add(boardReset);
       
       // left and right dice pairs
       DiePairPair diePairPair = new DiePairPair(b);
+      
+      // add to list (in the correct order)
+      interactives.add(blackProgress);
+      interactives.add(whiteProgress);
+      interactives.add(boardReset);
       interactives.add(diePairPair);
+      interactives.add(teamProgress);
       
       
       // piece setup
