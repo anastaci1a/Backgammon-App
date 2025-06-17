@@ -141,9 +141,9 @@ static class Palette {
   static final color SCOREDOWN_TEXT     = #FA2D2D;
   static final color SCOREDOWN_FX       = #A20707;
   
-  static final color PROGRESSBAR_LEFT    = #FFFFFF;
+  static final color PROGRESSBAR_LIGHT   = #FFFFFF;
   static final color PROGRESSBAR_PREVIEW = #A5A5A5;
-  static final color PROGRESSBAR_RIGHT   = #000000;
+  static final color PROGRESSBAR_DARK    = #000000;
   static final color PROGRESSBAR_OUTLINE = BOARDRESET_OUTLINE;
 }
 

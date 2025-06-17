@@ -231,13 +231,15 @@ class TeamProgress extends Interactive {
     blackProgress_change = blackProgress - blackProgress_prev;
     whiteProgress_change = whiteProgress - whiteProgress_prev;
     
-    float blackProgress_percent = (float) blackProgress / maxTeamProgress;
-    float whiteProgress_percent = (float) whiteProgress / maxTeamProgress;
+    // progress bar
     
-    Ease curve = Ease.IN_CUBIC;
+    float ratio = (float) blackProgress / (blackProgress + whiteProgress);
     
-    blackPB.moveTo(curve.apply(blackProgress_percent));
-    whitePB.moveTo(curve.apply(whiteProgress_percent));
+    Ease curve = Ease.INOUT_EXPO;
+    float ratioCurved = curve.apply(ratio); // once isn't enough
+    
+    blackPB.moveTo(ratioCurved);
+    whitePB.moveTo(1 - ratioCurved);
   }
   
   void observeChange() {
@@ -246,6 +248,8 @@ class TeamProgress extends Interactive {
     
     // score indicator particles
     if (shouldObserveChange) {
+      // one player gets fx (the one moving), unless other player gets out
+      
       if (blackProgress_change != 0) {
         int totalChange = blackProgress_change; // - whiteProgress_change;
         field.addPreset(ParticlePreset.SCORE_INDICATOR, blackParticlesPos, false, totalChange);
@@ -255,6 +259,18 @@ class TeamProgress extends Interactive {
         int totalChange = whiteProgress_change; // - blackProgress_change;
         field.addPreset(ParticlePreset.SCORE_INDICATOR, whiteParticlesPos, true, totalChange);
       }
+      
+      
+      // both players get fx each turn
+      
+      //int totalChange_black = blackProgress_change - whiteProgress_change;
+      //field.addPreset(ParticlePreset.SCORE_INDICATOR, blackParticlesPos, false, totalChange_black);
+      
+      //int totalChange_white = whiteProgress_change - blackProgress_change;
+      //field.addPreset(ParticlePreset.SCORE_INDICATOR, whiteParticlesPos, true, totalChange_white);
+      
+      
+      // reset derivs
       
       whiteProgress_change = 0;
       blackProgress_change = 0;
@@ -267,8 +283,6 @@ class TeamProgress extends Interactive {
     int poolsTotal = (4 * PPS) + 6; // 4 sections, 6 other pools (4 homes, 2 outs)
     blackPPValues = new int[poolsTotal];
     whitePPValues = new int[poolsTotal];
-    
-    //maxPieceValue = (4 * PPS) + 1;
     
     
     // black
@@ -351,10 +365,17 @@ class ProgressBar extends Interactive {
     
     // --
     
-    startColor   = Palette.PROGRESSBAR_LEFT;
+    startColor   = Palette.PROGRESSBAR_DARK;
     previewColor = Palette.PROGRESSBAR_PREVIEW;
-    endColor     = Palette.PROGRESSBAR_RIGHT;
+    endColor     = Palette.PROGRESSBAR_LIGHT;
     outlineColor = Palette.PROGRESSBAR_OUTLINE;
+    
+    if (flip) {
+      color temp = startColor;
+      
+      startColor = endColor;
+      endColor = temp;
+    }
     
     outlineSize = Settings.PROGRESSBAR_OUTLINE_PERCENT * board.size.x;
     rounding    = Settings.PROGRESSBAR_ROUNDING_PERCENT * board.size.x;
@@ -379,7 +400,7 @@ class ProgressBar extends Interactive {
     pushMatrix();
     
     translate(pos.x, pos.y);
-    rotate(flip ? PI + HALF_PI : HALF_PI);
+    rotate(HALF_PI);
     
     // "background" of progress bar (end color)
     

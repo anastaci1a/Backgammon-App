@@ -58,7 +58,9 @@ enum Ease {
                                                 return x < 0.5
                                                   ? ((float) Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
                                                   : ((float) Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
-                                              }};
+                                              }},
+  
+  SIGMOID     { @Override float apply(float x) { return 1 / (1 + (float) Math.pow(2.71, -x)); } };
   
   // --
   
