@@ -1,7 +1,7 @@
-// -- Physics --
+// -- Physics Engine --
 
 
-static class Physics { // <-- ChatGPT stuffs
+static class Physics {
   static class Box {
     boolean physicsActive;
     

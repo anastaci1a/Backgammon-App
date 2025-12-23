@@ -29,9 +29,9 @@ void vibrateTwice(long amount, int delay) {
   setVibrateTwice = true;
 }
 
-void vibrate(long amount) { // unsure what "amount" represents in the actual function (little info), maybe milliseconds? strength/amplitude?
+void vibrate(long amount) {
   //((Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE)).vibrate(amount); // UNCOMMENT ON ANDROID
-  ////println("vibrating with amount " + str(amount)); // debug
+  //// println("vibrating with amount " + str(amount)); // debug
 }
 
 void manageAndroid() {
@@ -411,8 +411,8 @@ PVector getSizeFromCorners(PVector[] corners) {
 String generateUID(int digits) {
   String UID = "";
   for (int i = 0; i < digits; i++) {
-    int index = int(random(Constants.ALPHANUMERALS.length()));
-    UID += Constants.ALPHANUMERALS.substring(index, index + 1);
+    int index = int(random(Constant.ALPHANUMERALS.length()));
+    UID += Constant.ALPHANUMERALS.substring(index, index + 1);
   }
   
   return UID;

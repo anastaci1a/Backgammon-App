@@ -1,3 +1,6 @@
+// -- Pair of Two Dice --
+
+
 class DiePair {
   Board board;
   

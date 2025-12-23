@@ -1,4 +1,4 @@
-// -- Board Interactive Classes --
+// -- Board Interactive Classes (high level) --
 
 
 class Interactive {
@@ -233,7 +233,9 @@ class TeamProgress extends Interactive {
     
     // progress bar
     
-    float ratio = (float) blackProgress / (blackProgress + whiteProgress);
+    int ratio1 = blackProgress; //maxTeamProgress - whiteProgress;
+    int ratio2 = whiteProgress; //maxTeamProgress - blackProgress;
+    float ratio = (float) ratio1 / (ratio1 + ratio2);
     
     Ease curve = Ease.INOUT_EXPO;
     float ratioCurved = curve.apply(ratio); // once isn't enough

@@ -1,3 +1,6 @@
+// -- Particle System --
+
+
 class ParticleField {
   ArrayList<Particle> particles;
   
@@ -110,6 +113,7 @@ class Particle {
 
 enum ParticlePreset {
   MAGICALS,
+  SHINIES,
   SCORE_INDICATOR // REQUIRED args: PVector position, float textSize, boolean flip, int number
 }
 
@@ -124,6 +128,16 @@ ArrayList<Particle> getParticlePreset(ParticlePreset preset, Object... args) {
       for (int i = 0; i < amount; i++) {
         ParticleMagical magical = new ParticleMagical();
         particles.add(magical);
+      }
+      
+      return particles;
+    }
+    
+    case SHINIES: {
+      int amount = int(random(30));
+      for (int i = 0; i < amount; i++) {
+        ParticleShiny shiny = new ParticleShiny();
+        particles.add(shiny);
       }
       
       return particles;
@@ -227,6 +241,50 @@ class ParticleMagical extends Particle {
     textSize(size);
     textAlign(CENTER, CENTER);
     text(text, 0, 0);
+  }
+}
+
+
+class ParticleShiny extends Particle {
+  float hue, sat, bri, alpha_start;
+  color col;
+  
+  ParticleShiny() {
+    super(
+      mouse.pos.copy(),               // pos
+      PVector.random2D(),             // vel
+      random(TWO_PI),                 // rot
+      (HALF_PI / 20) * random(-1, 1), // rotVel
+      int(random(                     // lifespan
+        Settings.ANIM_FRAMECOUNT_QUICK
+      ))
+    );
+    
+    size = Settings.PARTICLE_SHINY_SIZE_PERCENT * board.size.x;
+    
+    PVector posDelta = PVector.random2D().setMag(random(1 * size));
+    pos.add(posDelta);
+    
+    vel.setMag(random(0, size / 15));
+    
+    hue = random(0, 50);
+    sat = random(30, 60);
+    bri = 100;
+    alpha_start = random(10, 30);
+  }
+  
+  // --
+  
+  @Override
+  void drawParticle() {
+    float alpha = alpha_start * (float) life / lifespan;
+    
+    col = color(hue, sat, bri, alpha);
+    fill(col);
+    noStroke();
+    
+    circle(size);
+    size *= 1.1;
   }
 }
 

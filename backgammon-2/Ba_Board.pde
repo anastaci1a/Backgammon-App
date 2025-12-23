@@ -30,6 +30,8 @@ class Board {
   ArrayList<Piece> movingPieces; // pieces moving out (in these Piece instances, "sending" is true)
   ArrayList<Piece> lostPieces;   // pieces finished moving or no longer being held, not in a pool
   
+  ParticleField fx;
+  
   // --
   
   boolean setupBoard;
@@ -85,6 +87,10 @@ class Board {
     
     setupBoard_mapOfBlack = null; // this is protected against
     setupBoard_mapOfWhite = null; // (the null values)
+    
+    // --
+    
+    fx = new ParticleField();
   }
   
   void manage() {
@@ -104,6 +110,8 @@ class Board {
     for (Interactive i : interactives) {
       i.manage();
     }
+    
+    fx.manage();
     
     // --
     
@@ -396,7 +404,7 @@ class Board {
       }
       
       
-// generatePiecePoolMaps output
+      // generatePiecePoolMaps output
       case 9: {
         mapOfBlack = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 5 };
         mapOfWhite = new int[] { 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 0 };

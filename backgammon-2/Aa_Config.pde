@@ -1,11 +1,11 @@
    ////////////////////
 //////////////////////////
 
-/* +------------------+
-   | BACKGAMMON v2.0a |
-   |                  |
-   | > PRESS PLAY     |
-   +------------------+ */
+/* +-----------------+
+   | Backgammon v2.x |
+   |                 |
+   | > PRESS PLAY    |
+   +-----------------+ */
 
 //////////////////////////
    ////////////////////
@@ -23,7 +23,7 @@ static class Settings {
   static final float SCREEN_SIDES_MIN_PERCENT = 0.12; // side gradients, percent of shorter screen dimension
   
   // saving
-  static final String SAVING_FILENAME = "save.sav"; // saves all piecepools
+  static final String SAVING_FILENAME = "save.sav"; // save file for piece positions
   
   // board
   static final float BOARD_SHELF_THIN_PERCENT     = 0.01; // width percent
@@ -36,13 +36,13 @@ static class Settings {
   static final float MATRIX_DEFAULT_ROTATION = HALF_PI; // HALF_PI (landscape) or -HALF_PI (reverse landscape)
   
   // pieces
-  static final float PIECE_TAP_RADIUS_PERCENT       = 1.2;     // "tappability" of a piece (factor to radius of possible selection)
-  static final int   PIECES_PER_COLOR               = 15;      // only used for home spacing (+static reference), this doesn't determine the piece amount
+  static final float PIECE_TAP_RADIUS_PERCENT       = 1.2;     // "tappability" of a piece (selection hitbox, as a factor of radius)
+  static final int   PIECES_PER_COLOR               = 15;      // only used for home piecepool spacing (+static reference), this doesn't determine the piece amount
   static final float PIECES_SIZE_PERCENT            = 1 / 4.4; // piece size as a percent of stackWidth (in PiecePoolStack constructor)
   static final int   PIECES_STACK_AMOUNT            = 5;       // for spacing between pieces (stacks on triangles)
-  static final int   PIECE_UID_LENGTH               = 10;      // character length of a piece's UID (I don't know if UID is actually ever...um, used...but whatever it stays)
+  static final int   PIECE_UID_LENGTH               = 10;      // character length of a piece's UID (I think UID is actually ever, um, used...but whatever it stays)
   static final float PIECE_SEND_PIXEL_THRES         = 1;       // distance to target position for sending to complete
-  static final float PIECE_SEND_OUT_RANDOMNESS      = 0.3;     // float from 0 - 1 (low number is less random, higher number is more)
+  static final float PIECE_SEND_OUT_RANDOMNESS      = 0.3;     // from 0 - 1 (low number is less random, higher number is more)
   static final int   PIECE_OVERFLOW_FADEIN_FRAMES   = 5;       // amount of frames it takes for the overflow indicator to fade in
   
   // dice
@@ -65,7 +65,7 @@ static class Settings {
   // progress bar
   static final float PROGRESSBAR_THIN_ALLOCATION = 1 - BOARD_SHELF_MIDDLE_PERCENT - DICE_SIZE_ALLOCATION; // width percent
   static final float PROGRESSBAR_THIN_PERCENT    = 0.08 * PROGRESSBAR_THIN_ALLOCATION;                    // width percent
-  static final float PROGRESSBAR_LONG_PERCENT    = 0.850 * BOARD_SHELF_THICK_PERCENT;                      // height percent
+  static final float PROGRESSBAR_LONG_PERCENT    = 0.850 * BOARD_SHELF_THICK_PERCENT;                     // height percent
   
   static final float PROGRESSBAR_ROUNDING_PERCENT = 0.50 * PROGRESSBAR_THIN_PERCENT; // width percent
   static final float PROGRESSBAR_OUTLINE_PERCENT  = 0.00 * PROGRESSBAR_THIN_PERCENT; // width percent
@@ -82,6 +82,7 @@ static class Settings {
   
   // particles
   static final float PARTICLE_MAGICAL_SIZE_PERCENT = 0.5 * DICE_SIZE_PERCENT; // width percent
+  static final float PARTICLE_SHINY_SIZE_PERCENT   = 0.5 * DICE_SIZE_PERCENT; // width percent
   
   static final int   PARTICLE_SCOREGOOD_LIFESPAN = 90;
   static final int   PARTICLE_SCOREBAD_LIFESPAN  = 60;
@@ -90,8 +91,8 @@ static class Settings {
   static final int   PARTICLE_SCOREBAD_FX_AMOUNT  = 25;
   
   static final float PARTICLE_SCORE_TEXT_SIZE_PERCENT   = 0.8 * DICE_SIZE_PERCENT;  // width percent
-  static final float PARTICLE_SCOREGOOD_FX_SIZE_PERCENT = 0.1 * DICE_SIZE_PERCENT;  // ^^^^^^^^^^^^^
-  static final float PARTICLE_SCOREBAD_FX_SIZE_PERCENT  = 0.3 * DICE_SIZE_PERCENT;  // ^^^^^^^^^^^^^
+  static final float PARTICLE_SCOREGOOD_FX_SIZE_PERCENT = 0.1 * DICE_SIZE_PERCENT;  // width percent
+  static final float PARTICLE_SCOREBAD_FX_SIZE_PERCENT  = 0.3 * DICE_SIZE_PERCENT;  // width percent
   
   //static final int  PARTICLE_CONFETTI_AMOUNT_MAX  = 1000;          // max amount of confetti (max doubles)
   //static final Ease PARTICLE_CONFETTI_AMOUNT_EASE = Ease.IN_QUART; // ease to map amount of confetti
@@ -148,6 +149,6 @@ static class Palette {
 }
 
 
-static class Constants {
+static class Constant {
   static final String ALPHANUMERALS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 }

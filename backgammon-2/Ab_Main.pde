@@ -1,7 +1,7 @@
 // -- Imports --
 
 
-//import java.util.function.Function; // Java 8 (not android - for the commented easing)
+//import java.util.function.Function; // Java 8 (unsupported by APDE - for the commented easing)
 import java.lang.Object;
 
 // android (UNCOMMENT ON ANDROID)
@@ -37,12 +37,12 @@ void settings() {
   float widthAdjustment = 0, heightAdjustment = 0;
   
   // ios dimensions adjustment (subtract)
-  //widthAdjustment = 0.08;
+  //widthAdjustment = 0.08; // ipad camera notch
   //heightAdjustment = 0;
   
   // android dimensions adjustment
   widthAdjustment = 0;
-  heightAdjustment = 0.08;
+  heightAdjustment = 0.08; // navbar
   
   // --
   
@@ -51,8 +51,7 @@ void settings() {
   // --
   
   screenRatio *= (1 - heightAdjustment) / (1 - widthAdjustment);
-  //screenHeight = 900; // [landscape] decent size on laptop
-  screenHeight = 600; // [landscape] decent size on desktop
+  screenHeight = 800; // [landscape] decent size on desktop
   
   // --
   if (landscape) {
@@ -66,7 +65,7 @@ void settings() {
 
 
 void setup() {
-  // mobile (UNCOMMENT ON MOBILE) (optional ig: set orientation to landscape in export settings)
+  // mobile (UNCOMMENT ON MOBILE) (optional ig: set orientation to landscape in APDE export settings)
   //fullScreen(P2D);
   //screenWidth = width;
   //screenHeight = height;

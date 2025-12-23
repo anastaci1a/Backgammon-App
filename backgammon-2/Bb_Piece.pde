@@ -3,6 +3,9 @@
 
 class Piece {
   PiecePool parent;
+  Board board;
+  ParticleField fx;
+  
   String uid;
   
   PVector pos;
@@ -23,6 +26,9 @@ class Piece {
   
   Piece(PiecePool _parent, PVector _pos, color _col) {
     parent = _parent;
+    board = parent.parent;
+    fx = board.fx;
+    
     uid = generateUID(Settings.PIECE_UID_LENGTH);
     
     pos = _pos.copy();
@@ -82,6 +88,8 @@ class Piece {
       if (holding && parent.parent.heldPiece == this) { // note: when holding, the "parent" reference is no longer accurate- the real holder of `this` is the Board instance with heldPiece
         pos.add(mouse.pos_change);
         holding = !mouse.released && mouse.pressed;
+        
+        fx.addPreset(ParticlePreset.SHINIES);
       }
       
       // not holding
