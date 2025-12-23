@@ -22,23 +22,23 @@
 
 ## **Android Build Instructions**!!! \(Using [APDE](https://github.com/Calsign/APDE)\)
 
-> I created this game with the intent of its code being exported to an Android app using the APDE app. In my experience, the Processing Android framework has always been inconsistent and buggy, so I opted against using it.
+> I created this game with the intent of its code being exported to an Android app using the APDE app. In my experience, the [Processing for Android](https://android.processing.org/) framework has always been inconsistent and buggy (and outdated), so I opted against using it.
 
 0. **[Install APDE from the official repo](https://github.com/Calsign/APDE)**
 
 1. Copy the inner `backgammon-2` folder into APDE's `Sketchbook` folder (typically `./Sketchbook`)
 
-2. Delete the inner `sketch.properies` file, and rename `APDE_sketch.properties` to `sketch.properties`. __\[**IMPORTANT**\]__
+2. Delete the inner `sketch.properies` file, and rename `APDE_sketch.properties` to `sketch.properties`. **\[IMPORTANT\]**
 
-3. Comment/uncomment the indicated lines in `Ab_Main.pde` and `Util.pde` __\[**IMPORTANT x2**\]__
+3. Comment/uncomment the indicated lines in `Ab_Main.pde` and `Util.pde` **\[IMPORTANT x2\]**
 
 4. Open `APDE`, open `Sketches/backgammon-2`, tap the export setting button (`<>`) and select `App`
 
-5. Tap the run button (`▶`) to compile, and install the app when prompted
+5. Tap the run button (`▶`) to compile, then install when prompted
 
 ## **Extra**!!!!
 
-Pretty much everything in the game can be adjusted in the `backgammon-2/Aa_Config.pde` file!
+The behavior/appearence of pretty much everything in the game can be adjusted in the `backgammon-2/Aa_Config.pde` file!
 
 My favorite variable: `Settings.BOARD_PILLARS_PER_SECTION`; this alters the amount of "pillars" (triangles) from the typical 6 (this value also determines the maximum die face).
 
