@@ -28,7 +28,7 @@
 
 1. Copy the inner `backgammon` folder into APDE's `Sketchbook` folder (typically `./Sketchbook`)
 
-2. Delete the inner `sketch.properies` file, and rename `APDE_sketch.properties` to `sketch.properties`. **\[IMPORTANT\]**
+2. Delete the inner `sketch.properies` file, and rename `APDE_sketch.properties` to `sketch.properties` **\[IMPORTANT\]**
 
 3. Comment/uncomment the indicated lines in `Ab_Main.pde` and `Util.pde` **\[IMPORTANT x2\]**
 
